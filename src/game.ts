@@ -1,51 +1,44 @@
-/// --- Set up a system ---
+const baseScene = new Entity()
+engine.addEntity(baseScene)
+baseScene.addComponent(new GLTFShape('models/scene.glb'))
 
-class RotatorSystem {
-  // this group will contain every entity that has a Transform component
-  group = engine.getComponentGroup(Transform)
+//door
+const door = new Entity()
+engine.addEntity(door)
+door.addComponent(new GLTFShape('models/Puzzle01_Door.glb'))
 
-  update(dt: number) {
-    // iterate over the entities of the group
-    for (const entity of this.group.entities) {
-      // get the Transform component of the entity
-      const transform = entity.getComponent(Transform)
-
-      // mutate the rotation
-      transform.rotate(Vector3.Up(), dt * 10)
-    }
-  }
-}
-
-// Add a new instance of the system to the engine
-engine.addSystem(new RotatorSystem())
-
-/// --- Spawner function ---
-
-function spawnCube(x: number, y: number, z: number) {
-  // create the entity
-  const cube = new Entity()
-
-  // add a transform to the entity
-  cube.addComponent(new Transform({ position: new Vector3(x, y, z) }))
-
-  // add a shape to the entity
-  cube.addComponent(new BoxShape())
-
-  // add the entity to the engine
-  engine.addEntity(cube)
-
-  return cube
-}
-
-/// --- Spawn a cube ---
-
-const cube = spawnCube(8, 1, 4)
-
-cube.addComponent(
-  new OnPointerDown(() => {
-    cube.getComponent(Transform).scale.z *= 1.1
-    cube.getComponent(Transform).scale.x *= 0.9
-
-    spawnCube(Math.random() * 8 + 1, Math.random() * 8, Math.random() * 8 + 1)
+door.addComponent(
+  new Transform({
+    position: new Vector3(21, 10, 24)
   })
 )
+//Animator
+door.addComponent(new Animator())
+door.addComponent(Animator).addClip(new AnimationState('Door_open', { looping: false }))
+
+door.addComponent(
+  new OnClick((): void => {
+    door.getComponet(Animator).getClip("Door_open").play()
+  )}
+)
+//button 
+
+
+const button = new Entity()
+engine.addEntity(button)
+button.addComponent(new GLTFShape('models/Square_Button.glb'))
+
+// baseScene.addComponent(
+//   new Transform({
+//     position: new Vector3(20, 8, 20)
+//   })
+// )
+
+// door.addComponent(
+//   new utils.ScaleTransformComponet(
+//     new Vector3(13, 2.5),
+//     new Vector3(2, 4, 5),
+
+//     10
+//   )
+// )
